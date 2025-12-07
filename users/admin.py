@@ -17,6 +17,7 @@ class UserAdmin(UserAdmin):
         "username",
         "is_stream",
     )
+    readonly_fields = ["date_joined", "last_login", 'private_code', "link_of_stream"]
     search_fields = ("username",)
     ordering = [
         "username",
@@ -27,6 +28,7 @@ class UserAdmin(UserAdmin):
         "first_name",
         "last_name",
     ]
+
     fieldsets = (
         (
             "Authentication",
@@ -36,15 +38,18 @@ class UserAdmin(UserAdmin):
                     "password",
                     "first_name",
                     "last_name",
+                    "link_of_stream",
                     "logo",
+                    "description",
+                    "private_code",
                 )
             },
         ),
         (
             "Permissions",
-            {"fields": ("is_active", "is_superuser", "is_staff", "is_stream")},
+            {"fields": ("is_active", "is_superuser", "is_stream")},
         ),
-        ("Group&Permissions", {"fields": ("groups", "user_permissions")}),
+
         ("Important Date", {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (

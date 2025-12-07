@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
 
-        return self._create_user(username, password, extra_fields)
+        return self._create_user(username, password, **extra_fields)
 
 
 class User(AbstractUser, PermissionsMixin):
@@ -34,21 +34,22 @@ class User(AbstractUser, PermissionsMixin):
 
     email = models.EmailField(
         unique=True,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         max_length=255,
         verbose_name="ایمیل"
     )
     logo = models.ImageField(
         upload_to="avatars/",
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         max_length=255,
         verbose_name='لوگو'
     )
     description = models.TextField(
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
+        verbose_name='توضیحات'
     )
     is_active = models.BooleanField(
         default=True,
@@ -61,15 +62,30 @@ class User(AbstractUser, PermissionsMixin):
     link_of_stream=models.CharField(
         verbose_name="لینک استریم",
         max_length=255,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
+    )
+    private_code=models.CharField(
+        verbose_name="کد شناسایی"
+        ,max_length=255,
+        editable=False,
+        null=True,
+        blank=True,
     )
 
     def get_link_of_stream(self):
-        link_of_stream = f"stream/{self.username}/{self.id}/{self.description}"
-        self.link_of_stream = link_of_stream
-        self.save()
+        link_of_stream = f"stream/{self.username}/{self.id}"
+        if not self.link_of_stream :
+            self.link_of_stream = link_of_stream
+            self.save()
         return link_of_stream
+
+    def get_private_code(self):
+        code = get_random_string(length=255)
+        self.private_code = code
+        self.save()
+        return code
+
 
     objects = UserManager()
 
