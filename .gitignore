@@ -1,0 +1,8 @@
+node_modules/
+data/
+hls/
+uploads/logos/*
+!uploads/logos/.gitkeep
+logs/
+.env
+*.log
